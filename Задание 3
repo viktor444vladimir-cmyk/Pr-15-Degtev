@@ -1,0 +1,117 @@
+using System;
+using System.Collections.Generic;
+namespace zad3;
+public interface IPriceable
+{
+    decimal GetPrice();
+}
+public interface IWarrantable
+{
+    int GetWarrantyMonths();
+}
+public class Phone : IPriceable, IWarrantable
+{
+    public string Model { get; set; }
+    private decimal price;
+    private int warrantyMonths;
+
+    public Phone(string model, decimal price, int warrantyMonths)
+    {
+        Model = model;
+        this.price = price;
+        this.warrantyMonths = warrantyMonths;
+    }
+
+    public decimal GetPrice()
+    {
+        return price;
+    }
+    public int GetWarrantyMonths()
+    {
+        return warrantyMonths;
+    }
+
+    public void DisplayInfo()
+    {
+        Console.WriteLine($"{Model}: {price:C}, гарантия: {warrantyMonths} мес.");
+    }
+}
+
+public class Laptop : IPriceable
+{
+    public string Model { get; set; }
+    private decimal price;
+
+    public Laptop(string model, decimal price)
+    {
+        Model = model;
+        this.price = price;
+    }
+
+    public decimal GetPrice()
+    {
+        return price;
+    }
+
+    public void DisplayInfo()
+    {
+        Console.WriteLine($"{Model}: {price:C}");
+    }
+}
+
+public class Program
+{
+    public static void Main()
+    {
+        Console.WriteLine("=== МАГАЗИН ТЕХНИКИ ===\n");
+        Phone phone1 = new Phone("iPhone 15", 999.99m, 24);
+        Phone phone2 = new Phone("Samsung Galaxy", 799.99m, 18);
+        Laptop laptop1 = new Laptop("MacBook Pro", 1999.99m);
+        Laptop laptop2 = new Laptop("Dell XPS", 1299.99m);
+
+        List<IPriceable> products = new List<IPriceable> { phone1, phone2, laptop1, laptop2 };
+
+        Console.WriteLine("=== ВСЕ ТОВАРЫ ===");
+        decimal totalCost = 0;
+
+        foreach (var product in products)
+        {
+            totalCost += product.GetPrice();
+
+            if (product is Phone phone)
+            {
+                phone.DisplayInfo();
+            }
+            else if (product is Laptop laptop)
+            {
+                laptop.DisplayInfo();
+            }
+            if (product is IWarrantable warrantableProduct)
+            {
+                Console.WriteLine($"   Гарантия: {warrantableProduct.GetWarrantyMonths()} месяцев");
+            }
+            else
+            {
+                Console.WriteLine("   Гарантия: отсутствует");
+            }
+            Console.WriteLine();
+        }
+
+        Console.WriteLine($"=== ОБЩАЯ СТОИМОСТЬ: {totalCost:C} ===");
+
+        Console.WriteLine("\n=== ПРОВЕРКА ГАРАНТИИ ДЛЯ КАЖДОГО ТОВАРА ===");
+        foreach (var product in products)
+        {
+            if (product is Phone p)
+            {
+                Console.WriteLine($"{p.Model}: гарантия {p.GetWarrantyMonths()} мес.");
+            }
+            else if (product is Laptop l)
+            {
+                Console.WriteLine($"{l.Model}: гарантия отсутствует");
+            }
+        }
+
+        Console.ReadLine();
+    }
+}
